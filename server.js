@@ -17,6 +17,7 @@ app.get("/", function (request, response) {
 });
 
 app.get("/new/:url", function(request, response){
+  var url = request.params["url"];
   
   //response.end(client.urlshortner(request.params["url"]));
 });
