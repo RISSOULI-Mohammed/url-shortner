@@ -23,19 +23,23 @@ app.get("/", function (request, response) {
 app.get("/new/*", function(request, response){
   var url = request.originalUrl;
   url = url.replace("/new/", "");
+  var id = 0;
   MongoClient.connect("mongodb://omisimo:omisimo@ds229418.mlab.com:29418/shortner", function (err, dbo) {
   if (err) {
     throw err;
   } else {
     var db = dbo.db("shortner");
     var coll1 = db.collection("counters")
-    var sequenceDocument = coll1.findAndModify({
-      query:{_id: "urlid" },
-      update: {$inc:{sequence_value:1}},
-      update:true
-   });
+    coll1.findAndModify(
+      {_id: "urlid" },
+      [['_id','asc']],
+      {$inc:{sequence_value:1}},
+      {},
+      function(err, object){
+        id = object.value.sequence_value;
+      }
+   );
 	
-   var id = sequenceDocument.sequence_value;
     var doc = {"_id": id, "url": url};
     var coll = db.collection("url");
     coll.insert(doc, function(err, data){
