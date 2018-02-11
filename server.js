@@ -23,12 +23,13 @@ app.get("/", function(request, response) {
 app.get("/new/*", function(request, response) {
     var url = request.originalUrl;
     url = url.replace("/new/", "");
-    var reg = /(\w)*(:\/\/)(\w)*.(\w|-)+.(\w)+/i;
-    if(url.match(url, reg) == null){
+    var reg = /\w*:\/\/\w+\.\w+\.?[\w|:]*/ig;
+  //response.send(url.match(url, reg));
+    if(url.match(url, reg)[0] != url){
       var output = {"Error": "Invalid URL"};
       response.end(JSON.stringify(output));
     }
-
+  else {
     var id = 0;
     MongoClient.connect("mongodb://omisimo:omisimo@ds229418.mlab.com:29418/shortner", function(err, dbo) {
         if (err) {
@@ -64,7 +65,7 @@ app.get("/new/*", function(request, response) {
 
         }
     });
-
+  }
 
     //response.end(client.urlshortner(request.params["url"]));
 });
