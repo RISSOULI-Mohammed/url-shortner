@@ -21,7 +21,7 @@ app.get("/", function(request, response) {
 });
 
 app.get("/:id", function(request, response){
-  var id = request.params["id"];
+  var id = Number(request.params["id"]);
   MongoClient.connect("mongodb://omisimo:omisimo@ds229418.mlab.com:29418/shortner", function(err, dbo) {
   if (err) {
             throw err;
@@ -35,8 +35,9 @@ app.get("/:id", function(request, response){
             throw err;
         }
     
-    else {
-    response.end(JSON.stringify(result));
+    else if(result.length>0) {
+    var url = result[0].url;
+      response.redirect(url);
     }
       });
     }
