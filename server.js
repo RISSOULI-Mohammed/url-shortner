@@ -8,6 +8,7 @@ var mongodb = require('mongodb');
 var MongoClient = mongodb.MongoClient;
 
 
+
 // we've started you off with Express, 
 // but feel free to use whatever libs or frameworks you'd like through `package.json`.
 
@@ -22,12 +23,21 @@ app.get("/", function (request, response) {
 app.get("/new/*", function(request, response){
   var url = request.originalUrl;
   url = url.replace("/new/", "");
-  var doc = {"url": url};
   MongoClient.connect("mongodb://omisimo:omisimo@ds229418.mlab.com:29418/shortner", function (err, dbo) {
   if (err) {
     throw err;
   } else {
     var db = dbo.db("shortner");
+    
+    var sequenceDocument = db.counters.findAndModify({
+      query:{_id: "urlid" },
+      update: {$inc:{sequence_value:1}},
+      new:true
+   });
+	
+   var id = sequenceDocument.sequence_value;
+    var doc = {"_id": id, "url": url};
+  
     var coll = db.collection("url");
     coll.insert(doc, function(err, data){
       if (err) {
