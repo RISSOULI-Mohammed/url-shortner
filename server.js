@@ -19,10 +19,11 @@ app.get("/", function (request, response) {
   response.sendFile(__dirname + '/views/index.html');
 });
 
-app.get("/new/:url", function(request, response){
-  var url = request.params["url"];
-  var doc = {};
-  MongoClient.connect("mongodb://omisimo:omisimo@ds229418.mlab.com:29418/", function (err, dbo) {
+app.get("/new/*", function(request, response){
+  var url = request.originalUrl;
+  url = url.replace("/new/", "");
+  var doc = {"url": url};
+  MongoClient.connect("mongodb://omisimo:omisimo@ds229418.mlab.com:29418/shortner", function (err, dbo) {
   if (err) {
     throw err;
   } else {
@@ -32,7 +33,7 @@ app.get("/new/:url", function(request, response){
       if (err) {
     throw err;
   } else {
-    response.end(url);
+    response.end(JSON.stringify(data));
   }
     });
     dbo.close();
