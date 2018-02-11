@@ -28,16 +28,15 @@ app.get("/new/*", function(request, response){
     throw err;
   } else {
     var db = dbo.db("shortner");
-    
-    var sequenceDocument = db.counters.findAndModify({
+    var coll1 = db.collection("counters")
+    var sequenceDocument = coll1.findAndModify({
       query:{_id: "urlid" },
       update: {$inc:{sequence_value:1}},
-      new:true
+      update:true
    });
 	
    var id = sequenceDocument.sequence_value;
     var doc = {"_id": id, "url": url};
-  
     var coll = db.collection("url");
     coll.insert(doc, function(err, data){
       if (err) {
