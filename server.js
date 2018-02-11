@@ -20,7 +20,28 @@ app.get("/", function(request, response) {
     response.sendFile(__dirname + '/views/index.html');
 });
 
-app.get("/:id", function(request, response))
+app.get("/:id", function(request, response){
+  var id = request.params["id"];
+  MongoClient.connect("mongodb://omisimo:omisimo@ds229418.mlab.com:29418/shortner", function(err, dbo) {
+  if (err) {
+            throw err;
+        }
+    
+    else {
+    var db = dbo.db("shortner");
+      var coll = db.collection("url");
+      coll.find({_id: id}).toArray(function(err, result) {
+      if (err) {
+            throw err;
+        }
+    
+    else {
+    response.end(JSON.stringify(result));
+    }
+      });
+    }
+  });
+});
 
 app.get("/new/*", function(request, response) {
     var url = request.originalUrl;
@@ -55,7 +76,7 @@ app.get("/new/*", function(request, response) {
                                 "short_url": "https://best-donkey.glitch.me/" + id
                             };
                             response.end(JSON.stringify(output));
-                          dbo.close();
+                          //dbo.close();
                         }
                     });
                 }
