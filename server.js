@@ -30,25 +30,27 @@ app.get("/new/*", function(request, response){
   } else {
     var db = dbo.db("shortner");
     var coll1 = db.collection("counters")
-    coll1.findAndModify(
+    var sequence = coll1.findAndModify(
       {_id: "urlid" },
       [['_id','asc']],
       {$inc:{sequence_value:1}},
       {},
       function(err, object){
         id = object.value.sequence_value;
-      }
-   );
-	
-    var doc = {"_id": id, "url": url};
+        var doc = {"_id": id, "url": url};
+    //var doc = {"url": url};
     var coll = db.collection("url");
     coll.insert(doc, function(err, data){
       if (err) {
     throw err;
   } else {
-    response.end(JSON.stringify(data));
+    response.end(JSON.stringify(doc));
   }
     });
+      }
+   );
+	
+    
     dbo.close();
   }
 });
