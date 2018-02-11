@@ -23,7 +23,8 @@ app.get("/", function(request, response) {
 app.get("/new/*", function(request, response) {
     var url = request.originalUrl;
     url = url.replace("/new/", "");
-
+    var reg = //i;
+  
 
     var id = 0;
     MongoClient.connect("mongodb://omisimo:omisimo@ds229418.mlab.com:29418/shortner", function(err, dbo) {
